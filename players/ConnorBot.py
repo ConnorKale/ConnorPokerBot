@@ -26,15 +26,24 @@ class ConservativeBot(PokerBotAPI):
         
         # Define strong starting hands
         self.premium_hands = [
-            (Rank.ACE, Rank.ACE), (Rank.KING, Rank.KING), (Rank.QUEEN, Rank.QUEEN),
-            (Rank.JACK, Rank.JACK), (Rank.TEN, Rank.TEN),
+            (Rank.ACE, Rank.ACE), (Rank.KING, Rank.KING), (Rank.QUEEN, Rank.QUEEN), (Rank.JACK, Rank.JACK),
             (Rank.ACE, Rank.KING), (Rank.ACE, Rank.QUEEN), (Rank.ACE, Rank.JACK),
             (Rank.KING, Rank.QUEEN)
-        ] # Duplicates down to ten, and ace ^ down to jack, or king ^ queen
+        ] # Duplicates down to Jack, and ace ^ down to Queen, or king ^ queen
         self.good_suited_connectors = [
-            (Rank.KING, Rank.JACK), (Rank.QUEEN, Rank.JACK), (Rank.JACK, Rank.TEN),
-            (Rank.TEN, Rank.NINE), (Rank.NINE, Rank.EIGHT)
+            (Rank.KING, Rank.JACK),
+            (Rank.QUEEN, Rank.JACK), (Rank.JACK, Rank.TEN), (Rank.TEN, Rank.NINE), (Rank.NINE, Rank.EIGHT)
         ] # I guess this is going for high cards that are close together for a possible straight. Notably if the second highest card is a queen or higher, it's harder since you can only go in one direction.
+        self.keep_if_second_half = [
+            (Rank.TEN, Rank.TEN), (Rank.ACE, Rank.JACK), (Rank.NINE, Rank.EIGHT)
+        ]
+        self.keep_if_little = [
+            (Rank.NINE, Rank.NINE), (Rank.ACE, Rank.TEN)
+        ]
+        self.keep_if_big = [
+            (Rank.EIGHT, Rank.EIGHT), (Rank.KING, Rank.TEN), 
+        ]
+
 
     #Poker tournament rules: I think you start with 2000 moneys, and small is 20 and big is 40, and both multiply bu 1.5 each round (hopefully they round starting in the 30s..?)
     # The minimum table size is 2, the max is 6, money isn't reset when tables get redistributed, min raise is the current Big Blind ammount; there is a min_bet and max_bet the bot is passed
@@ -80,6 +89,7 @@ class ConservativeBot(PokerBotAPI):
                              (hand_tuple1 in self.good_suited_connectors or 
                               hand_tuple2 in self.good_suited_connectors))
         is_pocket_pair = card1.rank == card2.rank
+        is_good_second_half = (hand_tuple1 in self.keep_if_second_half or hand_tuple2 in self.keep_if_second_half)
 
         if not (is_premium or is_suited_connector or is_pocket_pair):
             if PlayerAction.CHECK in legal_actions:
