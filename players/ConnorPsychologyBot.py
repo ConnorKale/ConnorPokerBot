@@ -30,11 +30,31 @@ class ConservativeBot(PokerBotAPI):
             (Rank.JACK, Rank.JACK), (Rank.TEN, Rank.TEN),
             (Rank.ACE, Rank.KING), (Rank.ACE, Rank.QUEEN), (Rank.ACE, Rank.JACK),
             (Rank.KING, Rank.QUEEN)
-        ]
+        ] # Duplicates down to ten, and ace ^ down to jack, or king ^ queen
         self.good_suited_connectors = [
             (Rank.KING, Rank.JACK), (Rank.QUEEN, Rank.JACK), (Rank.JACK, Rank.TEN),
             (Rank.TEN, Rank.NINE), (Rank.NINE, Rank.EIGHT)
-        ]
+        ] # I guess this is going for high cards that are close together for a possible straight. Notably if the second highest card is a queen or higher, it's harder since you can only go in one direction.
+
+    #Poker tournament rules: I think you start with 2000 moneys, and small is 20 and big is 40, and both multiply bu 1.5 each round (hopefully they round starting in the 30s..?)
+    # The minimum table size is 2, the max is 6, money isn't reset when tables get redistributed, min raise is the current Big Blind ammount; there is a min_bet and max_bet the bot is passed
+    # You get DQed for having more than 5 timeouts or errors. I think you always fold for the rest of the tournament if that happens.
+
+    # Return what you set the bet to, NOT what you're raising it by!!!!!!!
+
+    
+    # Lines 90s in bot_manager.py is interesting
+
+    # Pot odds function does not do commonitorics with hand rankings, it assumes a random hand will win and takes ratio of inside pot to check ammount
+    
+    # The further you are in turn order, the more you can see if poeple have folded or not. You should keep hands more agressivly if more people have folded.
+
+    # If you're big blind, you shouldn't fold at the start even if you have a bad hand, unless someone raises.
+
+    # For each opponent, we need to keep a log of how much they go all in and do shenanigains. If an opponent goes all in the first time or very rarely, we won't take them seriously but if they go all in a lot then we will.
+    # Also want an opponent bluff count. If an opponent hasn't bluffed yet, we can assume they won't bluff I guess.
+    # Also want a count of eliminated opponents that will automatically fold
+    
     
     def get_action(self, game_state: GameState, hole_cards: List[Card], 
                    legal_actions: List[PlayerAction], min_bet: int, max_bet: int) -> tuple:
