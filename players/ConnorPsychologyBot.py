@@ -8,6 +8,8 @@ from bot_api import PokerBotAPI, PlayerAction, GameInfoAPI
 from engine.cards import Card, Rank, HandEvaluator
 from engine.poker_game import GameState
 
+# I'm commiting this comment, if it goes in Ansell's repo than something is broken.
+
 # I think hashtags are comments and this isn't breaking the compiler
 # Will keep hands with a sufficiently high card based on where in the turn order, or with two highish cards, or a sufficnently high pair based on turn order, or with a sufficently high
 
